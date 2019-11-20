@@ -13,5 +13,7 @@ jobs:
       uses: actions/setup-java@v1
       with:
         java-version: 13.0.1
+    - name: Change gradlew permissions
+      run: chmod +x gradlew
     - name: Build with Gradle
-      run: ./gradlew build
+      run: "./gradlew build"
