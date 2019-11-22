@@ -2,8 +2,6 @@ package conferencesessionservice.services
 
 import org.apache.tinkerpop.gremlin.process.traversal.dsl.GremlinDsl
 import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.GraphTraversalSource
-import org.apache.tinkerpop.gremlin.structure.Property
-import org.apache.tinkerpop.gremlin.structure.VertexProperty
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 import java.time.LocalDateTime
@@ -18,21 +16,17 @@ class GremlinApiService @Autowired constructor(private var graph: GraphTraversal
     private val idPropertyKey = "id"
     private val timePropertyKey = "time"
 
-    fun getSessionByConference(conferenceId: String): MutableList<out Property<String>>? {
-        val test = graph.V()
+    override fun getSessionByConference(conferenceId: String): List<String> {
+        return graph.V()
                 .has(conferenceLabel, idPropertyKey, conferenceId)
                 .out(edgeLabel)
                 .hasLabel(sessionLabel)
-                .properties<VertexProperty<String>>(idPropertyKey)
+                .properties<String>()
+                .values<String>(idPropertyKey)
                 .toList()
-
-        var res = ArrayList<String>();
-        test.forEach {
-            res.add(it.value().value())
-        }
     }
 
-    fun addSessionToConference(conferenceId: String, sessionId: String, startTime: LocalDateTime) {
+    override fun addSessionToConference(conferenceId: String, sessionId: String, startTime: LocalDateTime) {
         val conferenceTraversal = graph.V().has(conferenceLabel, idPropertyKey, conferenceId)
         val conference = if(conferenceTraversal.hasNext()) conferenceTraversal.next() else graph.addV(conferenceLabel).property(idPropertyKey, conferenceId).next()
 
